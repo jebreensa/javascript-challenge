@@ -15,17 +15,25 @@ var columns = ["datetime", "city", "state", "country", "shape", "durationMinutes
 var addData = (dataInput) => {
     dataInput.forEach(ufoSightings => {
         var row = $tbody.append("tr");
-        columns.forEach(column => row.append("td").text(ufoSightings[column]))});}
+        columns.forEach(column => row.append("td").text(ufoSightings[column])
+        )
+    });
+}
 
 addData(tableData);
 
 // Setup your event listener:
 button.on("click", () => {
     d3.event.preventDefault();   
+
     var inputDate = inputFieldDate.property("value").trim();
+
     var inputCity = inputFieldCity.property("value").toLowerCase().trim();
+
     var filterDate = tableData.filter(tableData => tableData.datetime === inputDate);
+
     var filterCity = tableData.filter(tableData => tableData.city === inputCity);
+
     var filterCombinedData = tableData.filter(tableData => tableData.datetime === inputDate && tableData.city === inputCity);
 
     $tbody.html("");
@@ -38,8 +46,10 @@ button.on("click", () => {
         addData(filterCombinedData);
     }
     else if(response.filterCombinedData.length === 0 && ((response.filterDate.length !== 0 || response.filterCity.length !== 0))) {
-        addData(filterDate) || addData(filterCity);
+        addData(filterDate) || addData(filterCity);}
+
     else {
-        $tbody.append("tr").append("td").text("No Sightings Here...continue on....);
+        $tbody.append("tr").append("td").text("No Sightings..choose another filter");
     }
 })
+
