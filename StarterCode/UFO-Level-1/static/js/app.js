@@ -1,42 +1,59 @@
+// Reading the js. file: 
 var tableData=data;
-
+console.log(tableData);
 // YOUR CODE HERE!
-// viewing the avialble data from data.js:
-// console.log(tableData)  
+//setting up the UFO sightings/ consoling th data from data.js: 
+function tableDisplay(ufoSightings) {
+    var tbody = d3.select("tbody");
+    ufoSightings.forEach((ufoRecord) => {
+        var row = tbody.append("tr");
+        Object.entries(ufoRecord).forEach(([key, value]) => {
+            var cell = row.append("td");
+            cell.html(value);
+        });
+    });
+};
 
-// Next step is we want to create our references:
-var $tbody = d3.select("tbody");
-var button = d3.select("#filter-btn");
-var inputFieldDate = d3.select("#datetime");
-var inputFieldCity = d3.select("#city");
-var columns = ["datetime", "city", "state", "country", "shape", "durationMinutes", "comments"]
+tableDisplay(tableData);
 
-// pushing the data into HTML:
-var addData = (dataInput) => {
-    dataInput.forEach(ufoSightings => {
-        var row = $tbody.append("tr");
-        columns.forEach(column => row.append("td").text(ufoSightings[column]))});}
+//empty table for the new data:
 
-addData(tableData);
+function deleteTbody() {
+    d3.select("tbody")
+        .selectAll("tr").remove()
+        .selectAll("td").remove();
+};
 
-// Setup your event listener:
-button.on("click", () => {
-    d3.event.preventDefault();   
-    var inputDate = inputFieldDate.property("value").trim();
-    var filterDate = tableData.filter(tableData => tableData.datetime === inputDate);
+//Table Filter:
+var filter= d3.select("#filter-btn");
+
+//filtering the Data table and display the entire data table if there is no entries: 
+filter.on("click", function(event){
+    d3.event.preventDefault();
+    deleteTbody();
+    var dateInput = d3.select("#datetime").property("value");
+
+    if(dateInput.trim() === "") {
+        var filteredData=tableData;
+    } else {
+         var filteredData=tableData.filter(ufoSightings=>
+            ufoSightings.datetime === dateInput.trim());
+    };
+    console.log(filteredData);
+    tableDisplay(filteredData);
+});
+
+
+
+
+//Clear the inputs:
+var filterClear = d3.select('#clear-btn')
+
+filterClear.on("click", function() {
     
+    d3.event.preventDefault();
+    
+    deleteTbody();
 
-    $tbody.html("");
-
-    let response = {
-        filterDate
-    }
-
-    if(response.filterDate.length !== 0) {
-        addData(filterDate);
-    }
-
-    else {
-        $tbody.append("tr").append("td").text("No Sightings Here...Move On...");
-    }
-})
+    tableDisplay(tableData)
+});
